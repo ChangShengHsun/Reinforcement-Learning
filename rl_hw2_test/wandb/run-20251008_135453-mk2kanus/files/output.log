@@ -1,0 +1,39 @@
+[1m[4mGrid World[0m[0m
+Size: (7, 8)
+########
+#      #
+# # ####
+#      #
+### ## #
+#T    G#
+########
+
+Run MC prediction. Seed:0
+
+Run TD(0) prediction. Seed:0
+
+Run MC prediction. Seed:1
+
+Run TD(0) prediction. Seed:1
+
+Run MC prediction. Seed:2
+
+Run TD(0) prediction. Seed:2
+
+Run MC prediction. Seed:3
+
+Run TD(0) prediction. Seed:3
+
+Run MC prediction. Seed:4
+
+Run TD(0) prediction. Seed:4
+
+[1m[4mGrid World[0m[0m
+Size: (7, 8)
+########
+#      #
+# # ####
+#      #
+### ## #
+#T    G#
+########

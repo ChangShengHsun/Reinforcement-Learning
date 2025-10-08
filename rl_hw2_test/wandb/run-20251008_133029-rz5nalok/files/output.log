@@ -1,0 +1,264 @@
+[1m[4mGrid World[0m[0m
+Size: (7, 8)
+########
+#      #
+# # ####
+#      #
+### ## #
+#T    G#
+########
+
+Run MC prediction. Seed:0
+
+Run TD(0) prediction. Seed:0
+
+Run MC prediction. Seed:1
+
+Run TD(0) prediction. Seed:1
+
+Run MC prediction. Seed:2
+
+Run TD(0) prediction. Seed:2
+
+Run MC prediction. Seed:3
+
+Run TD(0) prediction. Seed:3
+
+Run MC prediction. Seed:4
+
+Run TD(0) prediction. Seed:4
+
+Run MC prediction. Seed:5
+
+Run TD(0) prediction. Seed:5
+
+Run MC prediction. Seed:6
+
+Run TD(0) prediction. Seed:6
+
+Run MC prediction. Seed:7
+
+Run TD(0) prediction. Seed:7
+
+Run MC prediction. Seed:8
+
+Run TD(0) prediction. Seed:8
+
+Run MC prediction. Seed:9
+
+Run TD(0) prediction. Seed:9
+
+Run MC prediction. Seed:10
+
+Run TD(0) prediction. Seed:10
+
+Run MC prediction. Seed:11
+
+Run TD(0) prediction. Seed:11
+
+Run MC prediction. Seed:12
+
+Run TD(0) prediction. Seed:12
+
+Run MC prediction. Seed:13
+
+Run TD(0) prediction. Seed:13
+
+Run MC prediction. Seed:14
+
+Run TD(0) prediction. Seed:14
+
+Run MC prediction. Seed:15
+
+Run TD(0) prediction. Seed:15
+
+Run MC prediction. Seed:16
+
+Run TD(0) prediction. Seed:16
+
+Run MC prediction. Seed:17
+
+Run TD(0) prediction. Seed:17
+
+Run MC prediction. Seed:18
+
+Run TD(0) prediction. Seed:18
+
+Run MC prediction. Seed:19
+
+Run TD(0) prediction. Seed:19
+
+Run MC prediction. Seed:20
+
+Run TD(0) prediction. Seed:20
+
+Run MC prediction. Seed:21
+
+Run TD(0) prediction. Seed:21
+
+Run MC prediction. Seed:22
+
+Run TD(0) prediction. Seed:22
+
+Run MC prediction. Seed:23
+
+Run TD(0) prediction. Seed:23
+
+Run MC prediction. Seed:24
+
+Run TD(0) prediction. Seed:24
+
+Run MC prediction. Seed:25
+
+Run TD(0) prediction. Seed:25
+
+Run MC prediction. Seed:26
+
+Run TD(0) prediction. Seed:26
+
+Run MC prediction. Seed:27
+
+Run TD(0) prediction. Seed:27
+
+Run MC prediction. Seed:28
+
+Run TD(0) prediction. Seed:28
+
+Run MC prediction. Seed:29
+
+Run TD(0) prediction. Seed:29
+
+Run MC prediction. Seed:30
+
+Run TD(0) prediction. Seed:30
+
+Run MC prediction. Seed:31
+
+Run TD(0) prediction. Seed:31
+
+Run MC prediction. Seed:32
+
+Run TD(0) prediction. Seed:32
+
+Run MC prediction. Seed:33
+
+Run TD(0) prediction. Seed:33
+
+Run MC prediction. Seed:34
+
+Run TD(0) prediction. Seed:34
+
+Run MC prediction. Seed:35
+
+Run TD(0) prediction. Seed:35
+
+Run MC prediction. Seed:36
+
+Run TD(0) prediction. Seed:36
+
+Run MC prediction. Seed:37
+
+Run TD(0) prediction. Seed:37
+
+Run MC prediction. Seed:38
+
+Run TD(0) prediction. Seed:38
+
+Run MC prediction. Seed:39
+
+Run TD(0) prediction. Seed:39
+
+Run MC prediction. Seed:40
+
+Run TD(0) prediction. Seed:40
+
+Run MC prediction. Seed:41
+
+Run TD(0) prediction. Seed:41
+
+Run MC prediction. Seed:42
+
+Run TD(0) prediction. Seed:42
+
+Run MC prediction. Seed:43
+
+Run TD(0) prediction. Seed:43
+
+Run MC prediction. Seed:44
+
+Run TD(0) prediction. Seed:44
+
+Run MC prediction. Seed:45
+
+Run TD(0) prediction. Seed:45
+
+Run MC prediction. Seed:46
+
+Run TD(0) prediction. Seed:46
+
+Run MC prediction. Seed:47
+
+Run TD(0) prediction. Seed:47
+
+Run MC prediction. Seed:48
+
+Run TD(0) prediction. Seed:48
+
+Run MC prediction. Seed:49
+
+Run TD(0) prediction. Seed:49
+[34m[1mwandb[0m: [32m[41mERROR[0m Unable to connect to server to verify API token.
+Traceback (most recent call last):
+  File "C:\Users\ivan_chang\RL\rl_hw2_test\main.py", line 243, in <module>
+    wandb.log({
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\wandb_run.py", line 399, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\wandb_run.py", line 457, in wrapper_fn
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\wandb_run.py", line 444, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\wandb_run.py", line 2028, in log
+    self._log(data=data, step=step, commit=commit)
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\wandb_run.py", line 1739, in _log
+    self._partial_history_callback(data, step, commit)
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\wandb_run.py", line 399, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\wandb_run.py", line 1566, in _partial_history_callback
+    self._backend.interface.publish_partial_history(
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\interface\interface.py", line 713, in publish_partial_history
+    data = history_dict_to_json(run, data, step=user_step, ignore_copy_err=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\data_types\utils.py", line 54, in history_dict_to_json
+    payload[key] = val_to_json(
+                   ^^^^^^^^^^^^
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\data_types\utils.py", line 151, in val_to_json
+    _log_table_artifact(val, key, run)
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\data_types\utils.py", line 202, in _log_table_artifact
+    run.log_artifact(art)
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\wandb_run.py", line 399, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\wandb_run.py", line 457, in wrapper_fn
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\wandb_run.py", line 444, in wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\wandb_run.py", line 3175, in log_artifact
+    return self._log_artifact(
+           ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\wandb_run.py", line 3339, in _log_artifact
+    artifact._set_save_handle(handle, self._public_api().client)
+                                      ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\wandb_run.py", line 3367, in _public_api
+    return public.Api(overrides)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\apis\public\api.py", line 321, in __init__
+    wandb_login._verify_login(
+  File "C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\Lib\site-packages\wandb\sdk\wandb_login.py", line 346, in _verify_login
+    raise AuthenticationError(
+wandb.errors.errors.AuthenticationError: Unable to connect to server to verify API token.

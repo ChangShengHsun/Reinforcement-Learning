@@ -1,0 +1,19 @@
+{"time":"2025-10-08T13:06:42.04077+08:00","level":"INFO","msg":"stream: starting","core version":"0.22.2"}
+{"time":"2025-10-08T13:06:42.5317951+08:00","level":"INFO","msg":"stream: created new stream","id":"46wjrqiq"}
+{"time":"2025-10-08T13:06:42.5317951+08:00","level":"INFO","msg":"handler: started","stream_id":"46wjrqiq"}
+{"time":"2025-10-08T13:06:42.5328881+08:00","level":"INFO","msg":"stream: started","id":"46wjrqiq"}
+{"time":"2025-10-08T13:06:42.5328881+08:00","level":"INFO","msg":"writer: started","stream_id":"46wjrqiq"}
+{"time":"2025-10-08T13:06:42.5328881+08:00","level":"INFO","msg":"sender: started","stream_id":"46wjrqiq"}
+{"time":"2025-10-08T13:06:43.017586+08:00","level":"INFO","msg":"flowcontrol: backed up, offloading to disk","recordNumber":37}
+{"time":"2025-10-08T13:06:43.2591362+08:00","level":"INFO","msg":"flowcontrol: unblocked","totalOffloaded":93}
+{"time":"2025-10-08T13:07:43.1591856+08:00","level":"INFO","msg":"flowcontrol: backed up, offloading to disk","recordNumber":965}
+{"time":"2025-10-08T13:07:43.3231492+08:00","level":"INFO","msg":"flowcontrol: unblocked","totalOffloaded":36}
+{"time":"2025-10-08T13:08:13.1390987+08:00","level":"INFO","msg":"flowcontrol: backed up, offloading to disk","recordNumber":1399}
+{"time":"2025-10-08T13:08:13.3665344+08:00","level":"INFO","msg":"flowcontrol: unblocked","totalOffloaded":36}
+{"time":"2025-10-08T13:10:13.5317989+08:00","level":"INFO","msg":"flowcontrol: backed up, offloading to disk","recordNumber":3135}
+{"time":"2025-10-08T13:10:13.6910502+08:00","level":"INFO","msg":"flowcontrol: unblocked","totalOffloaded":36}
+{"time":"2025-10-08T13:11:05.8702079+08:00","level":"INFO","msg":"stream: closing","id":"46wjrqiq"}
+{"time":"2025-10-08T13:11:06.6293516+08:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-10-08T13:11:06.9029489+08:00","level":"INFO","msg":"handler: closed","stream_id":"46wjrqiq"}
+{"time":"2025-10-08T13:11:06.9034988+08:00","level":"INFO","msg":"sender: closed","stream_id":"46wjrqiq"}
+{"time":"2025-10-08T13:11:06.9034988+08:00","level":"INFO","msg":"stream: closed","id":"46wjrqiq"}

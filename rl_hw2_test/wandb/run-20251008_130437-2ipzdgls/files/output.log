@@ -1,0 +1,16 @@
+[1m[4mGrid World[0m[0m
+Size: (7, 8)
+########
+#      #
+# # ####
+#      #
+### ## #
+#T    G#
+########
+
+Run MC prediction. Seed:0
+Traceback (most recent call last):
+  File "C:\Users\ivan_chang\RL\rl_hw2_test\main.py", line 222, in <module>
+    monte_carlo_values.append(grid_world.get_all_state_values())
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'GridWorld' object has no attribute 'get_all_state_values'

@@ -1,0 +1,38 @@
+_wandb:
+    value:
+        cli_version: 0.22.2
+        e:
+            fvoge5wxvphdkojscbti469gf9b8co78:
+                codePath: rl_hw2_test\main.py
+                codePathLocal: main.py
+                cpu_count: 6
+                cpu_count_logical: 12
+                disk:
+                    /:
+                        total: "510394699776"
+                        used: "94009331712"
+                email: ic046262@gmail.com
+                executable: C:\Users\ivan_chang\anaconda3\envs\rl_assignment_1\python.exe
+                git:
+                    commit: 11425a1b02bce68e5db26bdea6958487444ab73b
+                    remote: https://github.com/ChangShengHsun/Reinforcement-Learning.git
+                host: LAPTOP-VJ79112M
+                memory:
+                    total: "16369545216"
+                os: Windows-10-10.0.26100-SP0
+                program: C:\Users\ivan_chang\RL\rl_hw2_test\main.py
+                python: CPython 3.11.13
+                root: C:\Users\ivan_chang\RL\rl_hw2_test
+                startedAt: "2025-10-08T05:04:37.426711Z"
+                writerId: fvoge5wxvphdkojscbti469gf9b8co78
+        m: []
+        python_version: 3.11.13
+        t:
+            "3":
+                - 13
+            "4": 3.11.13
+            "5": 0.22.2
+            "8":
+                - 3
+            "12": 0.22.2
+            "13": windows-amd64

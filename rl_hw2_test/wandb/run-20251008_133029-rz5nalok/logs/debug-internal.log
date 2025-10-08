@@ -1,0 +1,20 @@
+{"time":"2025-10-08T13:30:31.8821562+08:00","level":"INFO","msg":"stream: starting","core version":"0.22.2"}
+{"time":"2025-10-08T13:30:32.3794274+08:00","level":"INFO","msg":"stream: created new stream","id":"rz5nalok"}
+{"time":"2025-10-08T13:30:32.3794274+08:00","level":"INFO","msg":"handler: started","stream_id":"rz5nalok"}
+{"time":"2025-10-08T13:30:32.379968+08:00","level":"INFO","msg":"stream: started","id":"rz5nalok"}
+{"time":"2025-10-08T13:30:32.379968+08:00","level":"INFO","msg":"writer: started","stream_id":"rz5nalok"}
+{"time":"2025-10-08T13:30:32.379968+08:00","level":"INFO","msg":"sender: started","stream_id":"rz5nalok"}
+{"time":"2025-10-08T13:30:32.802319+08:00","level":"INFO","msg":"flowcontrol: backed up, offloading to disk","recordNumber":36}
+{"time":"2025-10-08T13:30:33.1090183+08:00","level":"INFO","msg":"flowcontrol: unblocked","totalOffloaded":94}
+{"time":"2025-10-08T13:44:55.8062314+08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": net/http: request canceled (Client.Timeout exceeded while awaiting headers)"}
+{"time":"2025-10-08T13:44:55.8128871+08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/ic046262-national-taiwan-university/rl_hw2/rz5nalok/file_stream\": dial tcp: lookup api.wandb.ai: no such host"}
+{"time":"2025-10-08T13:44:56.1738667+08:00","level":"INFO","msg":"stream: closing","id":"rz5nalok"}
+{"time":"2025-10-08T13:44:56.3072381+08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": dial tcp: lookup api.wandb.ai: no such host"}
+{"time":"2025-10-08T13:44:57.8997606+08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/ic046262-national-taiwan-university/rl_hw2/rz5nalok/file_stream\": dial tcp: lookup api.wandb.ai: no such host"}
+{"time":"2025-10-08T13:44:58.2321681+08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": dial tcp: lookup api.wandb.ai: no such host"}
+{"time":"2025-10-08T13:44:58.7531506+08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/graphql\": dial tcp: lookup api.wandb.ai: no such host"}
+{"time":"2025-10-08T13:45:02.3650315+08:00","level":"INFO","msg":"api: retrying error","error":"Post \"https://api.wandb.ai/files/ic046262-national-taiwan-university/rl_hw2/rz5nalok/file_stream\": dial tcp: lookup api.wandb.ai: no such host"}
+{"time":"2025-10-08T13:45:04.4050301+08:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2025-10-08T13:45:12.4946415+08:00","level":"INFO","msg":"handler: closed","stream_id":"rz5nalok"}
+{"time":"2025-10-08T13:45:12.4957383+08:00","level":"INFO","msg":"sender: closed","stream_id":"rz5nalok"}
+{"time":"2025-10-08T13:45:12.4957383+08:00","level":"INFO","msg":"stream: closed","id":"rz5nalok"}
