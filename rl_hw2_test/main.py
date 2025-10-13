@@ -14,7 +14,7 @@ from algorithms import (
     Q_Learning,
 )
 from gridworld import GridWorld
-wandb.init(project="rl_hw2", name="prediction_variance")
+# wandb.init(project="rl_hw2", name="prediction_variance")
 np.set_printoptions(threshold=np.inf, linewidth=np.inf)
 
 # 2-1
@@ -212,46 +212,108 @@ def run_Q_Learning(grid_world: GridWorld, iter_num: int):
     print()
 
 if __name__ == "__main__":
-    # seed = 1
-    grid_world = init_grid_world("maze.txt",INIT_POS)
-    # 2-1
-    monte_carlo_values = []
-    td_values = []
-    ground_truth_values = np.load("prediction_GT.npy")
-    for seed in range(50):
-        monte_carlo_values.append(run_MC_prediction(grid_world,seed))
-        td_values.append(run_TD_prediction(grid_world,seed))
-        #calculate average
-        mc_avg_values = np.mean(monte_carlo_values, axis=0)
-        td_avg_values = np.mean(td_values, axis=0)
-        #calculate variance
-        mc_var_values = np.var(monte_carlo_values, axis=0)
-        td_var_values = np.var(td_values, axis=0)
-        #calculate bias
-        mc_bias_values = (mc_avg_values - ground_truth_values)**2
-        td_bias_values = (td_avg_values - ground_truth_values)**2
-    var_table  = wandb.Table(columns=["state", "series", "value"])
-    bias_table = wandb.Table(columns=["state", "series", "value"])
-    num_states = len(ground_truth_values)
-    for i in range(num_states):
-        # Variance 長表
-        var_table.add_data(int(i), "MC", float(mc_var_values[i]))
-        var_table.add_data(int(i), "TD", float(td_var_values[i]))
-        # Bias^2 長表
-        bias_table.add_data(int(i), "MC", float(mc_bias_values[i]))
-        bias_table.add_data(int(i), "TD", float(td_bias_values[i]))
-    wandb.log({
-    "Variance vs State": wandb.plot.line(
-        var_table, x="state", y="value", stroke="series", title="Variance vs State"
-    ),
-    "Bias vs State": wandb.plot.line(
-        bias_table, x="state", y="value", stroke="series", title="Bias vs State"
-    ),
-})
+#     grid_world = init_grid_world("maze.txt",INIT_POS)
+#     # 2-1
+#     monte_carlo_values = []
+#     td_values = []
+#     ground_truth_values = np.load("prediction_GT.npy")
+#     for seed in range(50):
+#         monte_carlo_values.append(run_MC_prediction(grid_world,seed))
+#         td_values.append(run_TD_prediction(grid_world,seed))
+#         #calculate average
+#         mc_avg_values = np.mean(monte_carlo_values, axis=0)
+#         td_avg_values = np.mean(td_values, axis=0)
+#         #calculate variance
+#         mc_var_values = np.var(monte_carlo_values, axis=0)
+#         td_var_values = np.var(td_values, axis=0)
+#         #calculate bias
+#         mc_bias_values = (mc_avg_values - ground_truth_values)
+#         td_bias_values = (td_avg_values - ground_truth_values)
+#     var_table  = wandb.Table(columns=["state", "series", "value"])
+#     bias_table = wandb.Table(columns=["state", "series", "value"])
+#     num_states = len(ground_truth_values)
+#     for i in range(num_states):
+#         # Variance 長表
+#         var_table.add_data(int(i), "MC", float(mc_var_values[i]))
+#         var_table.add_data(int(i), "TD", float(td_var_values[i]))
+#         # Bias^2 長表
+#         bias_table.add_data(int(i), "MC", float(mc_bias_values[i]))
+#         bias_table.add_data(int(i), "TD", float(td_bias_values[i]))
+#     wandb.log({
+#     "Variance vs State": wandb.plot.line(
+#         var_table, x="state", y="value", stroke="series", title="Variance vs State"
+#     ),
+#     "Bias vs State": wandb.plot.line(
+#         bias_table, x="state", y="value", stroke="series", title="Bias vs State"
+#     ),
+# })
 
 
     # 2-2
+    # 2-2 控制實驗 + wandb logging
     grid_world = init_grid_world("maze.txt")
+    methods = ["sarsa", "qlearning"]
+    epsilons = [0.1, 0.2, 0.3, 0.4]
+
+    for method in methods:
+        for epsilon in epsilons:
+            run_name = f"{method}_epsilon={epsilon}"
+            wandb.init(project="rl_hw2_control", name=run_name, reinit=True)
+            EPSILON = epsilon
+
+            if method == "montecarlo":
+                print(f"\n===== Running Monte Carlo with epsilon={epsilon} =====")
+                policy_iteration = MonteCarloPolicyIteration(
+                    grid_world,
+                    discount_factor=DISCOUNT_FACTOR,
+                    learning_rate=LEARNING_RATE,
+                    epsilon=EPSILON,
+                )
+                trace = policy_iteration.run(max_episode=512000)
+
+            elif method == "sarsa":
+                print(f"\n===== Running SARSA with epsilon={epsilon} =====")
+                policy_iteration = SARSA(
+                    grid_world,
+                    discount_factor=DISCOUNT_FACTOR,
+                    learning_rate=LEARNING_RATE,
+                    epsilon=EPSILON,
+                )
+                trace = policy_iteration.run(max_episode=512000)
+
+            elif method == "qlearning":
+                print(f"\n===== Running Q-Learning with epsilon={epsilon} =====")
+                policy_iteration = Q_Learning(
+                    grid_world,
+                    discount_factor=DISCOUNT_FACTOR,
+                    learning_rate=LEARNING_RATE,
+                    epsilon=EPSILON,
+                    buffer_size=BUFFER_SIZE,
+                    update_frequency=UPDATE_FREQUENCY,
+                    sample_batch_size=SAMPLE_BATCH_SIZE,
+                )
+                trace = policy_iteration.run(max_episode=50000)
+
+            # --- wandb log ---
+            # 每個 episode 都 log reward / loss
+            for ep, reward, loss in trace:
+                wandb.log({
+                    "episode": ep,
+                    "average_reward": reward,
+                    "average_loss": loss,
+                    "epsilon": epsilon,
+                    "method": method
+                })
+
+            # 結束當前 run
+            wandb.finish()
+            grid_world.reset()
+            print(f"✅ Finished {run_name}")
+
+        
+
+    
+
     # run_MC_policy_iteration(grid_world, 512000)
     # run_SARSA(grid_world, 512000)
     # run_Q_Learning(grid_world, 50000)

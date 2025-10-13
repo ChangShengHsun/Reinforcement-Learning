@@ -1,3 +1,4 @@
+#I hate TA
 import numpy as np
 import json
 from collections import deque
@@ -226,7 +227,10 @@ class MonteCarloPolicyIteration(ModelFreeControl):
         gain = 0
         max_steps = 100
         steps = 0
-        while not done_flag and max_steps > steps:
+        loss_trace = []
+        total_loss = 0
+        total_reward = 0
+        while not done_flag and steps < max_steps:
             action_probs = self.policy[current_state]
             action = np.random.choice(self.action_space, p = action_probs)
             next_state, reward, done_flag = self.grid_world.step(action)
@@ -237,8 +241,12 @@ class MonteCarloPolicyIteration(ModelFreeControl):
             steps += 1
         for s in reversed(list(zip(state_trace, action_trace, reward_trace))):
             gain = self.discount_factor * gain + s[2]
+            total_loss += abs(gain - self.q_values[s[0]][s[1]])
             self.q_values[s[0]][s[1]] += self.lr * (gain - self.q_values[s[0]][s[1]])
-        return
+        total_reward = sum(reward_trace)/len(reward_trace)
+        total_loss /= len(reward_trace)
+        return total_reward, total_loss
+
 
         
 
@@ -262,13 +270,30 @@ class MonteCarloPolicyIteration(ModelFreeControl):
         state_trace   = []
         action_trace  = []
         reward_trace  = []
+        return_trace = []
+        return_trace_average = []
+        total_reward = 0
+        total_loss = 0
         while iter_episode < max_episode:
-            self.policy_evaluation(state_trace, action_trace, reward_trace)
+            total_reward, total_loss = self.policy_evaluation(state_trace, action_trace, reward_trace)
             self.policy_improvement()
             state_trace.clear()
             action_trace.clear()
             reward_trace.clear()
+            return_trace.append((iter_episode, total_reward, total_loss))
+            if (iter_episode + 1) % 10 == 0:
+                total_loss_average = 0
+                total_reward_average = 0
+                for i in range(max(0, iter_episode-9), iter_episode+1):
+                    total_reward_average += return_trace[i][1]
+                    total_loss_average += return_trace[i][2]
+                total_reward_average /= 10
+                total_loss_average /= 10
+                return_trace_average.append((iter_episode, total_reward_average, total_loss_average))
             iter_episode += 1
+            
+        return return_trace_average
+        
 
 class SARSA(ModelFreeControl):
     def __init__(
@@ -288,11 +313,15 @@ class SARSA(ModelFreeControl):
     def policy_eval_improve(self, s, a, r, s2, a2, is_done) -> None:
         """Evaluate the policy and update the values after one step"""
         if not is_done:
+            loss = abs((r + self.discount_factor * self.q_values[s2][a2]) - self.q_values[s][a])
             self.q_values[s][a] += self.lr * (r + self.discount_factor * self.q_values[s2][a2] - self.q_values[s][a])
+            return loss,is_done
         else:
+            loss = abs(r - self.q_values[s][a])
             self.q_values[s][a] += self.lr * (r - self.q_values[s][a])
+            return loss,is_done
 
-        return is_done
+        
     def epsilon_greedy(self, state) -> int:
         if np.random.random() < self.epsilon:
             return np.random.randint(self.action_space)
@@ -308,22 +337,42 @@ class SARSA(ModelFreeControl):
         prev_a = None
         prev_r = None
         is_done = False
+        return_trace = []
+        return_trace_average = []
+        
         while iter_episode < max_episode:
-            current_state = self.grid_world.reset()
+            # current_state = self.grid_world.reset()
             is_done = False
-            max_steps = 10
+            max_steps = 50
             steps = 0
+            total_reward = 0
+            total_loss = 0
             while not is_done and steps < max_steps:
                 prev_s = current_state
                 prev_a = self.epsilon_greedy(current_state)
                 next_state, prev_r, is_done = self.grid_world.step(prev_a)
                 best_action = self.epsilon_greedy(next_state)
-                is_done = self.policy_eval_improve(prev_s, prev_a, prev_r, next_state, best_action, is_done)
+                temp_loss, is_done = self.policy_eval_improve(prev_s, prev_a, prev_r, next_state, best_action, is_done)
                 steps += 1
+                total_reward += prev_r
+                total_loss += temp_loss
                 current_state = next_state
+            total_reward /= steps
+            total_loss /= steps
+            return_trace.append((iter_episode, total_reward, total_loss))
+            if (iter_episode + 1) % 10 == 0:
+                total_loss_average = 0
+                total_reward_average = 0
+                for i in range(max(0, iter_episode-9), iter_episode+1):
+                    total_reward_average += return_trace[i][1]
+                    total_loss_average += return_trace[i][2]
+                total_reward_average /= 10
+                total_loss_average /= 10
+                return_trace_average.append((iter_episode, total_reward_average, total_loss_average))
             iter_episode += 1
         for s in range(self.state_space):
             self.policy_index[s] = self.q_values[s].argmax()
+        return return_trace_average
             
 class Q_Learning(ModelFreeControl):
     def __init__(
@@ -354,9 +403,13 @@ class Q_Learning(ModelFreeControl):
     def policy_eval_improve(self, s, a, r, s2, is_done) -> None:
         """Evaluate the policy and update the values after one step"""
         if is_done:
+            loss = abs(r - self.q_values[s][a])
             self.q_values[s][a] += self.lr * (r - self.q_values[s][a])
+            return loss
         else:
+            loss = abs((r + self.discount_factor * self.q_values[s2].max()) - self.q_values[s][a])
             self.q_values[s][a] += self.lr * (r + self.discount_factor * self.q_values[s2].max() - self.q_values[s][a])
+            return loss
     def epsilon_greedy(self, state) -> int:
         if np.random.random() < self.epsilon:
             return np.random.randint(self.action_space)
@@ -371,23 +424,44 @@ class Q_Learning(ModelFreeControl):
         prev_a = None
         prev_r = None
         is_done = False
+        return_trace = []
+        return_trace_average = []
         transition_count = 0
         while iter_episode < max_episode:
-            current_state = self.grid_world.reset()
+            total_reward = []
+            total_loss = []
+            # current_state = self.grid_world.reset()
+            steps = 0
+            max_steps = 50
             is_done  = False
-            while not is_done:
+            while not is_done and steps < max_steps:
                 prev_s = current_state
                 prev_a = self.epsilon_greedy(prev_s)
                 next_state, prev_r, is_done = self.grid_world.step(prev_a)
+                total_reward.append(prev_r)
                 current_state = next_state
                 self.add_buffer(prev_s, prev_a, prev_r, current_state, is_done)
                 transition_count += 1
                 batch = []
+                steps += 1
                 if transition_count % self.update_frequency == 0:
                     batch  = self.sample_batch()
                     for s, a, r, s2, is_done_batch in batch:
-                        self.policy_eval_improve(s,a,r,s2, is_done_batch)
+                        temp_loss = self.policy_eval_improve(s,a,r,s2, is_done_batch)
+                        total_loss.append(temp_loss)
+            total_reward_val = np.mean(total_reward) if total_reward else 0
+            total_loss_val = np.mean(total_loss) if total_loss else 0
+            return_trace.append((iter_episode, total_reward_val, total_loss_val))
+            if (iter_episode + 1) % 10 == 0:
+                total_loss_average = 0
+                total_reward_average = 0
+                for i in range(max(0, iter_episode-9), iter_episode+1):
+                    total_reward_average += return_trace[i][1]
+                    total_loss_average += return_trace[i][2]
+                total_reward_average /= 10
+                total_loss_average /= 10
+                return_trace_average.append((iter_episode, total_reward_average, total_loss_average))
             iter_episode += 1
         for s in range(self.state_space):
             self.policy_index[s] = self.q_values[s].argmax()
-            
+        return return_trace_average
