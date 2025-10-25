@@ -191,6 +191,7 @@ class My2048Env(gym.Env):
             logging.debug("Illegal move")
             info['illegal_move'] = True
             reward = self.illegal_move_reward
+            reward -= 100
             self.foul_count += 1
             
 

@@ -23,7 +23,7 @@ my_config = {
     "policy_network": "MlpPolicy",
     "save_path": "models/sample_model",
     "num_train_envs": 6,
-    "epoch_num": 500,
+    "epoch_num": 2000,
     "timesteps_per_epoch": 2048*6*2,
     "eval_episode_num": 10,
 
@@ -86,7 +86,7 @@ def train(eval_env, model, config):
         eval_duration = time.time() - eval_start
 
         # Print training progress and speed
-        if epoch % 10 == 0:
+        if epoch % 50 == 0:
             print(f"\n{'='*60}")
             print(f"Epoch {epoch + 1}/{config['epoch_num']} completed")
             print(f"{'='*60}")
