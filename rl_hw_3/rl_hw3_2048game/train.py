@@ -141,10 +141,29 @@ if __name__ == "__main__":
 
     # Create model from loaded config and train
     # Note: Set verbose to 0 if you don't want info messages
-    model = my_config["algorithm"](
-        my_config["policy_network"], 
-        train_env, 
-        verbose=0,
-        tensorboard_log=my_config["run_id"]
-    )
+    # Original model-instantiation (kept for reference):
+    # model = my_config["algorithm"](
+    #     my_config["policy_network"], 
+    #     train_env, 
+    #     verbose=0,
+    #     tensorboard_log=my_config["run_id"]
+    # )
+
+    # Try to load previously trained 'best' model (best.zip). If loading fails, create a fresh model.
+    save_dir = my_config["save_path"]
+    best_model_name = f"{save_dir}/best"
+    try:
+        print(f"Trying to load existing model '{best_model_name}.zip'...")
+        model = my_config["algorithm"].load(best_model_name, env=train_env, device='auto')
+        print("Loaded existing model. Continuing training/evaluation with that model.")
+    except Exception as e:
+        # If loading failed (file not found or incompatible), fall back to creating a new model
+        print(f"Could not load '{best_model_name}.zip' ({e}); creating a new model.")
+        model = my_config["algorithm"](
+            my_config["policy_network"],
+            train_env,
+            verbose=0,
+            tensorboard_log=my_config["run_id"]
+        )
+
     train(eval_env, model, my_config)

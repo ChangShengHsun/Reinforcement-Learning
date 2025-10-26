@@ -176,15 +176,16 @@ class My2048Env(gym.Env):
             elif action == 2:    # Down
                 reward += 0.6
             elif action == 3:    # Left
-                reward -= 1.2
+                if zeros_after != 0:
+                    reward -= 7.5
 
             # 7) Combine total score (tweak coefficients based on training stability)
             reward += (
                 # 0.60 * board_term +       # board pattern preference (main component)
                 # 0.30 * empties_term +     # empty tiles preference (secondary)
-                3.00 * bottom_fill_gain + # reward if bottom row becomes fuller after the action
-                1.20 * bottom_monotonic_term +  # bottom row monotonicity
-                6.00 * corner_bonus              # corner-related reward/penalty
+                5.00 * bottom_fill_gain + # reward if bottom row becomes fuller after the action
+                1.50 * bottom_monotonic_term +  # bottom row monotonicity
+                8.00 * corner_bonus              # corner-related reward/penalty
             )
             # === End of reward shaping ===
         except IllegalMove:
