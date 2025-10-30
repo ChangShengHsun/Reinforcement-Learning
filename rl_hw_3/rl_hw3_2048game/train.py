@@ -1,14 +1,54 @@
 import warnings
 import time
+# --- 新增 imports ---
+import torch as th
+import torch.nn as nn
+from stable_baselines3.common.torch_layers import BaseFeaturesExtractor
 import gymnasium as gym
 from gymnasium.envs.registration import register
-
+from gymnasium import spaces
 import wandb
 from wandb.integration.sb3 import WandbCallback
 
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines3 import A2C, DDPG, DQN, PPO, SAC, TD3
+
+# --- 新增：專為 4x4 棋盤設計的 CNN Extractor ---
+class CustomCNN(BaseFeaturesExtractor):
+    """
+    :param observation_space: (gym.Space)
+    :param features_dim: (int) Number of features extracted.
+        This corresponds to the number of unit for the last layer.
+    """
+
+    def __init__(self, observation_space: spaces.Box, features_dim: int = 256):
+        super().__init__(observation_space, features_dim)
+        # We assume CxHxW images (channels first)
+        # Re-ordering will be done by pre-preprocessing or wrapper
+        n_input_channels = observation_space.shape[0]
+        self.cnn = nn.Sequential(
+            nn.Conv2d(n_input_channels, 256, kernel_size=2, stride=1),  # -> (256, 3, 3)
+            nn.ReLU(inplace=True),
+            nn.Conv2d(256, 512, kernel_size=2, stride=1),# -> (512, 2, 2)
+            nn.ReLU(inplace=True),
+            nn.Flatten(),                                 # -> 512*2*2 = 2048
+            nn.Linear(2048, 1024),
+            nn.ReLU(inplace=True),
+            nn.Linear(1024, features_dim),
+            nn.ReLU(inplace=True),
+        )
+
+        # Compute shape by doing one forward pass
+        with th.no_grad():
+            n_flatten = self.cnn(
+                th.as_tensor(observation_space.sample()[None]).float()
+            ).shape[1]
+
+        self.linear = nn.Sequential(nn.Linear(n_flatten, features_dim), nn.ReLU())
+
+    def forward(self, observations: th.Tensor) -> th.Tensor:
+        return self.linear(self.cnn(observations))
 
 warnings.filterwarnings("ignore")
 register(
@@ -19,8 +59,9 @@ register(
 # Set hyper params (configurations) for training
 my_config = {
     "run_id": "example",
-    "algorithm": PPO,
-    "policy_network": "MlpPolicy",
+    "algorithm": DQN,
+    # ✅ 改成 CNN policy
+    "policy_network": "CnnPolicy",
     "save_path": "models/sample_model",
     "num_train_envs": 6,
     "epoch_num": 2000,
@@ -28,6 +69,12 @@ my_config = {
     "eval_episode_num": 10,
 
     "ent_coef": 0.025,
+    # ✅ 專給 CnnPolicy 的參數：輸入已是 0/1，不做影像正規化
+     "policy_kwargs": {
+        "normalize_images": False,                   # 你的觀測已是 0/1 或小數，不需要 /255
+        "features_extractor_class": CustomCNN,      # 使用上面自訂的 4x4 CNN
+        "features_extractor_kwargs": {"features_dim": 128},
+    },
 }
 
 def make_env():
@@ -44,7 +91,7 @@ def eval(env, model, eval_episode_num):
         env.seed(seed)
         obs = env.reset()
 
-        # Interact with env using old Gym API
+        # Interact with env using old Gym API (VecEnv: 4-tuple)
         while not done:
             action, _state = model.predict(obs, deterministic=True)
             obs, reward, done, info = env.step(action)
@@ -86,7 +133,7 @@ def train(eval_env, model, config):
         eval_duration = time.time() - eval_start
 
         # Print training progress and speed
-        if epoch % 50 == 0:
+        if epoch % 10 == 0:
             print(f"\n{'='*60}")
             print(f"Epoch {epoch + 1}/{config['epoch_num']} completed")
             print(f"{'='*60}")
@@ -98,13 +145,11 @@ def train(eval_env, model, config):
             print(f"   - Avg Score: {avg_score:.1f}")
             print(f"   - Avg Highest Tile: {avg_highest:.1f}")
 
-
         # wandb.log(
         #     {"avg_highest": avg_highest,
         #      "avg_score": avg_score}
         # )
         
-
         ### Save best model
         if current_best_score < avg_score or current_best_highest < avg_highest:
             print("Saving New Best Model")
@@ -136,34 +181,25 @@ if __name__ == "__main__":
     # )
 
     train_env = SubprocVecEnv([make_env for _ in range(my_config["num_train_envs"])])
-
     eval_env = DummyVecEnv([make_env])
-
-    # Create model from loaded config and train
-    # Note: Set verbose to 0 if you don't want info messages
-    # Original model-instantiation (kept for reference):
-    # model = my_config["algorithm"](
-    #     my_config["policy_network"], 
-    #     train_env, 
-    #     verbose=0,
-    #     tensorboard_log=my_config["run_id"]
-    # )
 
     # Try to load previously trained 'best' model (best.zip). If loading fails, create a fresh model.
     save_dir = my_config["save_path"]
     best_model_name = f"{save_dir}/best"
-    try:
-        print(f"Trying to load existing model '{best_model_name}.zip'...")
-        model = my_config["algorithm"].load(best_model_name, env=train_env, device='auto')
-        print("Loaded existing model. Continuing training/evaluation with that model.")
-    except Exception as e:
-        # If loading failed (file not found or incompatible), fall back to creating a new model
-        print(f"Could not load '{best_model_name}.zip' ({e}); creating a new model.")
-        model = my_config["algorithm"](
-            my_config["policy_network"],
-            train_env,
-            verbose=0,
-            tensorboard_log=my_config["run_id"]
-        )
+    # try:
+    #     print(f"Trying to load existing model '{best_model_name}.zip'...")
+    #     # ⚠️ 若先前是用 MLP 存檔，這裡可能會失敗（架構不相容），下面 except 會改用新的 CNN 建立
+    #     model = my_config["algorithm"].load(best_model_name, env=train_env, device='auto')
+    #     print("Loaded existing model. Continuing training/evaluation with that model.")
+    # except Exception as e:
+    print(f"Could not load '{best_model_name}.zip' ; creating a new model.")
+    model = my_config["algorithm"](
+        my_config["policy_network"],
+        train_env,
+        verbose=0,
+        tensorboard_log=my_config["run_id"],
+        # ✅ 把 policy_kwargs 傳入
+        policy_kwargs=my_config.get("policy_kwargs", None)
+    )
 
     train(eval_env, model, my_config)

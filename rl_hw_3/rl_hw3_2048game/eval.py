@@ -15,7 +15,7 @@ def evaluation(env, model, render_last, eval_num=100):
     highest = []
 
     ### Run eval_num times rollouts
-    for seed in range(eval_num+100):
+    for seed in range(eval_num):
         done = False
         # Set seed and reset env using Gymnasium API
         obs, info = env.reset(seed=seed)
@@ -70,8 +70,8 @@ if __name__ == "__main__":
     if model is None:
         raise ValueError(f"Could not load model from {model_path} with any of the available algorithms")
     
-    eval_num = 1
-    score, highest = evaluation(env, model, True, eval_num)
+    eval_num = 100
+    score, highest = evaluation(env, model, False, eval_num)
 
     print("Avg_score:  ", np.sum(score)/eval_num)
     print("Avg_highest:", np.sum(highest)/eval_num)
