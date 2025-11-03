@@ -14,7 +14,6 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines3 import A2C, DDPG, DQN, PPO, SAC, TD3
 
-# --- 新增：專為 4x4 棋盤設計的 CNN Extractor ---
 class CustomCNN(BaseFeaturesExtractor):
     """
     :param observation_space: (gym.Space)
@@ -64,7 +63,7 @@ my_config = {
     "policy_network": "CnnPolicy",
     "save_path": "models/sample_model",
     "num_train_envs": 6,
-    "epoch_num": 2000,
+    "epoch_num": 1000,
     "timesteps_per_epoch": 2048*6*2,
     "eval_episode_num": 10,
 
@@ -118,10 +117,10 @@ def train(eval_env, model, config):
         model.learn(
             total_timesteps=config["timesteps_per_epoch"],
             reset_num_timesteps=False,
-            # callback=WandbCallback(
-            #     gradient_save_freq=100,
-            #     verbose=2,
-            # ),
+            callback=WandbCallback(
+                gradient_save_freq=100,
+                verbose=2,
+            ),
         )
 
         epoch_duration = time.time() - epoch_start_time
@@ -145,10 +144,11 @@ def train(eval_env, model, config):
             print(f"   - Avg Score: {avg_score:.1f}")
             print(f"   - Avg Highest Tile: {avg_highest:.1f}")
 
-        # wandb.log(
-        #     {"avg_highest": avg_highest,
-        #      "avg_score": avg_score}
-        # )
+        wandb.log(
+            {"avg_highest": avg_highest,
+             "avg_score": avg_score,
+            "epoch": epoch}
+        )
         
         ### Save best model
         if current_best_score < avg_score or current_best_highest < avg_highest:
@@ -173,12 +173,11 @@ def train(eval_env, model, config):
 if __name__ == "__main__":
 
     # Create wandb session (Uncomment to enable wandb logging)
-    # run = wandb.init(
-    #     project="assignment_3",
-    #     config=my_config,
-    #     sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
-    #     id=my_config["run_id"]
-    # )
+    run = wandb.init(
+        project="assignment_3",
+        config=my_config,
+        sync_tensorboard=True,  # auto-upload sb3's tensorboard metrics
+    )
 
     train_env = SubprocVecEnv([make_env for _ in range(my_config["num_train_envs"])])
     eval_env = DummyVecEnv([make_env])
